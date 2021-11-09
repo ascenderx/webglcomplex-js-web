@@ -26,14 +26,14 @@ uniform vec2 uOffset;
 uniform float uZoom;
 
 // https://stackoverflow.com/a/17897228/9904700
-vec3 hsv2rgb(vec3 c)
+vec3 hsv2rgb(in vec3 c)
 {
   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
   vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
   return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-vec3 getColor(vec2 point) {
+vec3 getColor(in vec2 point) {
   float x = point.x;
   float y = point.y;
   float r = sqrt(x*x + y*y);
@@ -46,39 +46,39 @@ vec3 getColor(vec2 point) {
   return hsv2rgb(vec3(h, s, v));
 }
 
-vec2 cMul(vec2 a, vec2 b) {
+vec2 cMul(in vec2 a, in vec2 b) {
   return vec2(a.x*b.x - a.y*b.y, a.x*b.y + a.y*b.x);
 }
 
-vec2 cDiv(vec2 a, vec2 b) {
+vec2 cDiv(in vec2 a, in vec2 b) {
   float d = b.x*b.x + b.y*b.y;
   return vec2((a.x*b.x + a.y*b.y)/d, (a.y*b.x - a.x*b.y)/d);
 }
 
-float cLen(vec2 z) {
+float cLen(in vec2 z) {
   return sqrt(z.x*z.x + z.y*z.y);
 }
 
-float cArg(vec2 z) {
+float cArg(in vec2 z) {
   return atan(z.y, z.x);
 }
 
-vec2 cPolar(float r, float th) {
+vec2 cPolar(in float r, in float th) {
   return vec2(r*cos(th), r*sin(th));
 }
 
-vec2 cUnit(vec2 z) {
+vec2 cUnit(in vec2 z) {
   float d = sqrt(z.x*z.x + z.y*z.y);
   return vec2(z.x/d, z.y/d);
 }
 
-vec2 cRotate(vec2 z, float degrees) {
+vec2 cRotate(in vec2 z, in float degrees) {
   float r = cLen(z);
   float th = cArg(z);
   return cPolar(r, th + (degrees * DEG_TO_RAD));
 }
 
-vec2 func(vec2 z) {
+vec2 func(in vec2 z) {
   vec2 a = cMul(z, z) - R;
   vec2 b = z - 2.0*R - I;
   vec2 b2 = cMul(b, b);
@@ -92,8 +92,7 @@ void main() {
   vec2 center = uResolution*0.5;
   vec2 z = gl_FragCoord.xy - center;
   float ratio = 0.1*min(uResolution.x, uResolution.y);
-  vec2 z1 = (z*uZoom + uOffset)/ratio;
-  vec2 o = func(z1);
+  vec2 o = func((z*uZoom + uOffset)/ratio);
   gl_FragColor = vec4(getColor(o), 1.0);
 }
 `;
