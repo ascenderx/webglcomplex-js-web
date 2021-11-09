@@ -7,7 +7,7 @@ class ApplicationState {
     timestamp = 0,
     offsetDX = 0,
     offsetDY = 0,
-    zoom = 0,
+    zoom = 1.0,
   } = {}) {
     this.mouseX = mouseX;
     this.mouseY = mouseY;
